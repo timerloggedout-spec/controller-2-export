@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/timerloggedout-spec/controller-2-export/blob/main/schemas/export-receipt-v1.schema.json",
+  "title": "AntiGravity Device 2 Export Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "export_id",
+    "captured_at",
+    "source_device_id",
+    "exporter_version",
+    "capture_mode",
+    "sources",
+    "records",
+    "redaction",
+    "publisher",
+    "publication"
+  ],
+  "properties": {
+    "schema": {
+      "const": "antigravity-export-receipt/v1"
+    },
+    "export_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_device_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "exporter_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capture_mode": {
+      "enum": [
+        "initial_snapshot",
+        "incremental",
+        "reconciliation"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256",
+          "bytes",
+          "format",
+          "records_seen"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "format": {
+            "enum": [
+              "jsonl",
+              "sqlite"
+            ]
+          },
+          "records_seen": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "records_emitted": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "records_skipped": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
+    "records": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "seen",
+        "emitted",
+        "deduplicated"
+      ],
+      "properties": {
+        "seen": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "emitted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deduplicated": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "redaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_version",
+        "redactions_total",
+        "review_status"
+      ],
+      "properties": {
+        "policy_version": {
+          "type": "string"
+        },
+        "redactions_total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "review_status": {
+          "enum": [
+            "pending",
+            "passed",
+            "rejected"
+          ]
+        }
+      }
+    },
+    "publisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "publisher_login",
+        "credential_ref",
+        "credential_class"
+      ],
+      "properties": {
+        "publisher_login": {
+          "type": "string"
+        },
+        "credential_ref": {
+          "type": "string"
+        },
+        "credential_class": {
+          "enum": [
+            "owner_pat",
+            "fine_grained_pat",
+            "github_actions_token"
+          ]
+        },
+        "initiating_actor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "branch",
+        "commit_sha"
+      ],
+      "properties": {
+        "repository": {
+          "const": "timerloggedout-spec/controller-2-export"
+        },
+        "branch": {
+          "const": "main"
+        },
+        "commit_sha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^([a-f0-9]{40})$"
+        }
+      }
+    }
+  }
+}\n
